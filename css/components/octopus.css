@@ -1,0 +1,178 @@
+/* ============================================================
+   Octopus — central animated entity
+   ============================================================ */
+
+.octopus-stage {
+  position: relative;
+  width: 100%;
+  max-width: 880px;
+  margin-inline: auto;
+  aspect-ratio: 1.25 / 1;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+}
+
+.octopus {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  filter: drop-shadow(0 10px 60px rgba(212, 165, 116, 0.25));
+  /* Breath applied via outer wrapper so parallax can also translate */
+  animation: breathe 6s ease-in-out infinite;
+  will-change: transform;
+}
+
+.octopus__head {
+  transform-origin: 300px 260px;
+}
+
+/* Tentacles wave subtly */
+.tentacles--front .tentacle,
+.tentacles--back .tentacle {
+  transform-origin: center top;
+  animation: tentacleSway 5s ease-in-out infinite;
+}
+
+.tentacles--back .tentacle:nth-child(1) { animation-delay: 0s; }
+.tentacles--back .tentacle:nth-child(2) { animation-delay: 0.4s; }
+.tentacles--back .tentacle:nth-child(3) { animation-delay: 0.8s; }
+.tentacles--back .tentacle:nth-child(4) { animation-delay: 1.2s; }
+.tentacles--front .tentacle:nth-child(1) { animation-delay: 0.2s; }
+.tentacles--front .tentacle:nth-child(2) { animation-delay: 0.6s; }
+.tentacles--front .tentacle:nth-child(3) { animation-delay: 1s; }
+.tentacles--front .tentacle:nth-child(4) { animation-delay: 1.4s; }
+
+.eye__pupil,
+.eye__highlight {
+  transition: transform 180ms var(--ease-out-expo);
+  will-change: transform;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* VSL player module — sits over octopus */
+.vsl {
+  position: relative;
+  z-index: 2;
+  width: clamp(280px, 55%, 480px);
+  aspect-ratio: 16 / 9;
+  padding: 3px;
+  border-radius: var(--radius-lg);
+  background: var(--gradient-accent);
+  box-shadow:
+    var(--glow-lg),
+    0 40px 80px rgba(0, 0, 0, 0.7);
+  transition: transform var(--dur-mid) var(--ease-out-expo), box-shadow var(--dur-mid) var(--ease-out-expo);
+}
+
+.vsl:hover {
+  transform: translateY(-3px) scale(1.015);
+  box-shadow:
+    0 0 120px rgba(212, 165, 116, 0.4),
+    0 50px 100px rgba(0, 0, 0, 0.8);
+}
+
+.vsl__frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(ellipse at center, rgba(24, 24, 27, 0.6), rgba(5, 5, 6, 0.98));
+  border-radius: calc(var(--radius-lg) - 3px);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.vsl__frame::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 3px);
+  pointer-events: none;
+}
+
+.vsl__frame::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  top: 0;
+  height: 40%;
+  background: linear-gradient(180deg, rgba(232, 180, 160, 0.08), transparent);
+  pointer-events: none;
+  animation: scanline 4s linear infinite;
+  opacity: 0.35;
+}
+
+.vsl__status {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 5px 10px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(10, 10, 11, 0.6);
+  backdrop-filter: blur(10px);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: var(--ls-wider);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  z-index: 2;
+}
+
+.vsl__dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #F26A5C;
+  box-shadow: 0 0 10px rgba(242, 106, 92, 0.8);
+  animation: pulseDot 1.4s ease-in-out infinite;
+}
+
+.vsl__play {
+  width: clamp(60px, 16%, 90px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--gradient-accent);
+  color: var(--bg-void);
+  box-shadow: var(--glow-md), inset 0 1px 0 rgba(255,255,255,0.4);
+  transition: transform var(--dur-mid) var(--ease-out-expo);
+  z-index: 2;
+  animation: pulseGlow 2.5s ease-out infinite;
+}
+
+.vsl__play svg {
+  width: 38%;
+  height: 38%;
+  margin-left: 3px;
+}
+
+.vsl__play:hover {
+  transform: scale(1.08);
+}
+
+.vsl__timecode {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: var(--ls-wider);
+  color: var(--text-secondary);
+  padding: 3px 8px;
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-xs);
+  background: rgba(10, 10, 11, 0.6);
+  backdrop-filter: blur(10px);
+  z-index: 2;
+}

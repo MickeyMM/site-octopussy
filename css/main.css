@@ -1,0 +1,27 @@
+/* ============================================================
+   Octosystem.io — Main stylesheet entry
+   Import order matters: variables → reset → base → components → sections
+   ============================================================ */
+
+@import url("./variables.css");
+@import url("./reset.css");
+@import url("./typography.css");
+@import url("./base.css");
+@import url("./animations.css");
+
+/* Components */
+@import url("./components/system-bar.css");
+@import url("./components/buttons.css");
+@import url("./components/cards.css");
+@import url("./components/octopus.css");
+@import url("./components/floating-cta.css");
+@import url("./components/decorative.css");
+
+/* Sections */
+@import url("./sections/hero.css");
+@import url("./sections/diagnosis.css");
+@import url("./sections/capture.css");
+@import url("./sections/intelligence.css");
+@import url("./sections/authority.css");
+@import url("./sections/final-cta.css");
+@import url("./sections/footer.css");

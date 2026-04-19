@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bronzeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E8B4A0"/>
+      <stop offset="50%" stop-color="#D4A574"/>
+      <stop offset="100%" stop-color="#8C5F3A"/>
+    </linearGradient>
+    <radialGradient id="eyeGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFE9C7"/>
+      <stop offset="60%" stop-color="#D4A574"/>
+      <stop offset="100%" stop-color="#5A3C22"/>
+    </radialGradient>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <g stroke="url(#bronzeGrad)" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.75">
+    <path d="M200,340 C150,420 120,470 90,540"/>
+    <path d="M260,360 C240,440 230,490 210,560"/>
+    <path d="M340,360 C360,440 370,490 390,560"/>
+    <path d="M400,340 C450,420 480,470 510,540"/>
+  </g>
+
+  <g filter="url(#softGlow)">
+    <ellipse cx="300" cy="260" rx="150" ry="160" fill="rgba(20,18,16,0.85)" stroke="url(#bronzeGrad)" stroke-width="1.5"/>
+    <ellipse cx="300" cy="245" rx="130" ry="140" fill="none" stroke="url(#bronzeGrad)" stroke-width="0.6" opacity="0.4"/>
+    <ellipse cx="300" cy="235" rx="105" ry="115" fill="none" stroke="url(#bronzeGrad)" stroke-width="0.4" opacity="0.25"/>
+  </g>
+
+  <g>
+    <circle cx="255" cy="235" r="28" fill="rgba(245,240,232,0.08)" stroke="url(#bronzeGrad)" stroke-width="1"/>
+    <circle cx="255" cy="235" r="14" fill="url(#eyeGlow)"/>
+    <circle cx="251" cy="231" r="3.5" fill="#FFE9C7" opacity="0.85"/>
+    <circle cx="345" cy="235" r="28" fill="rgba(245,240,232,0.08)" stroke="url(#bronzeGrad)" stroke-width="1"/>
+    <circle cx="345" cy="235" r="14" fill="url(#eyeGlow)"/>
+    <circle cx="341" cy="231" r="3.5" fill="#FFE9C7" opacity="0.85"/>
+  </g>
+
+  <g stroke="url(#bronzeGrad)" stroke-width="2.5" fill="none" stroke-linecap="round">
+    <path d="M210,380 C170,450 160,500 140,580"/>
+    <path d="M280,400 C270,480 270,530 270,590"/>
+    <path d="M320,400 C330,480 330,530 330,590"/>
+    <path d="M390,380 C430,450 440,500 460,580"/>
+  </g>
+</svg>

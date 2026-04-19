@@ -1,0 +1,60 @@
+/* ============================================================
+   Decorative atoms — frame corners, dividers, etc
+   ============================================================ */
+
+/* Corner brackets — OS HUD style */
+.frame-corner {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.frame-corner--tl {
+  top: 0; left: 0;
+  border-top: 1px solid var(--accent-gold);
+  border-left: 1px solid var(--accent-gold);
+}
+
+.frame-corner--tr {
+  top: 0; right: 0;
+  border-top: 1px solid var(--accent-gold);
+  border-right: 1px solid var(--accent-gold);
+}
+
+.frame-corner--bl {
+  bottom: 0; left: 0;
+  border-bottom: 1px solid var(--accent-gold);
+  border-left: 1px solid var(--accent-gold);
+}
+
+.frame-corner--br {
+  bottom: 0; right: 0;
+  border-bottom: 1px solid var(--accent-gold);
+  border-right: 1px solid var(--accent-gold);
+}
+
+/* Thin accent divider line */
+.divider-line {
+  display: block;
+  width: 60px;
+  height: 1px;
+  background: var(--gradient-accent);
+  margin: 0 auto var(--space-4);
+  opacity: 0.7;
+}
+
+/* Grid overlay (used in hero) */
+.grid-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.25;
+  background-image:
+    linear-gradient(rgba(232, 180, 160, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232, 180, 160, 0.05) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+}

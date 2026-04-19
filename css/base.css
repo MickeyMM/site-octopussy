@@ -1,0 +1,171 @@
+/* ============================================================
+   Base layout — body, grain texture, ambient glow
+   ============================================================ */
+
+body {
+  background-color: var(--bg-primary);
+  background-image:
+    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(184, 132, 92, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 90% 30%, rgba(232, 180, 160, 0.05) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 60% at 50% 100%, rgba(140, 95, 58, 0.06) 0%, transparent 55%),
+    linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Metal-brushed directional texture overlay */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,0) 0px,
+      rgba(255,255,255,0.004) 1px,
+      rgba(0,0,0,0.012) 2px,
+      rgba(255,255,255,0) 3px
+    );
+  pointer-events: none;
+  z-index: var(--z-grain);
+  opacity: 0.9;
+}
+
+/* Fractal-noise grain */
+.grain {
+  position: fixed;
+  inset: -100%;
+  width: 300%;
+  height: 300%;
+  pointer-events: none;
+  z-index: var(--z-grain);
+  opacity: 0.08;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.9  0 0 0 0 0.7  0 0 0 0 0.45  0 0 0 0.85 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  animation: grainShift 8s steps(8) infinite;
+  will-change: transform;
+}
+
+/* Ambient gradient orbs behind everything */
+.ambient-glow {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.ambient-glow__orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.35;
+  mix-blend-mode: screen;
+  animation: orbFloat 22s ease-in-out infinite;
+}
+
+.ambient-glow__orb--one {
+  width: 560px;
+  height: 560px;
+  top: -120px;
+  left: -100px;
+  background: radial-gradient(circle, rgba(232, 180, 160, 0.6), transparent 70%);
+}
+
+.ambient-glow__orb--two {
+  width: 680px;
+  height: 680px;
+  bottom: -200px;
+  right: -160px;
+  background: radial-gradient(circle, rgba(140, 95, 58, 0.55), transparent 70%);
+  animation-delay: -8s;
+}
+
+/* Layout container helper */
+.container {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+  position: relative;
+  z-index: var(--z-base);
+}
+
+/* Section head shared layout */
+.section__head {
+  max-width: 980px;
+  margin-inline: auto var(--space-7);
+  padding: 0 var(--container-pad);
+  margin-bottom: clamp(3rem, 5vw, 5rem);
+  position: relative;
+  z-index: var(--z-base);
+}
+
+.section__head--center {
+  text-align: center;
+  margin-inline: auto;
+}
+
+.section__index {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--ls-widest);
+  text-transform: uppercase;
+  color: var(--accent-gold);
+  margin-bottom: var(--space-5);
+}
+
+.section__index::before {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: var(--gradient-accent);
+}
+
+.section__title {
+  font-family: var(--font-display);
+  font-size: var(--fs-3xl);
+  font-weight: var(--fw-black);
+  line-height: 1.05;
+  letter-spacing: var(--ls-tight);
+  margin-bottom: var(--space-5);
+}
+
+.section__sub {
+  font-size: var(--fs-lg);
+  color: var(--text-secondary);
+  max-width: 640px;
+  line-height: 1.55;
+}
+
+.section__head--center .section__sub {
+  margin-inline: auto;
+}
+
+.section__head--center .section__index {
+  justify-content: center;
+}
+
+/* Reveal-on-scroll helpers (set initial, JS toggles .is-visible) */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity var(--dur-slow) var(--ease-out-expo),
+    transform var(--dur-slow) var(--ease-out-expo);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .grain, .ambient-glow__orb { animation: none !important; }
+  html { scroll-behavior: auto; }
+}

@@ -1,0 +1,77 @@
+/* ============================================================
+   Typography foundation
+   Display: Unbounded (geometric, premium)
+   UI:      Space Grotesk
+   Mono:    JetBrains Mono (data / OS vibe)
+   ============================================================ */
+
+body {
+  font-family: var(--font-ui);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-reg);
+  color: var(--text-primary);
+  letter-spacing: var(--ls-normal);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  line-height: 1.02;
+  letter-spacing: var(--ls-tight);
+  color: var(--text-primary);
+}
+
+h1 { font-size: var(--fs-4xl); font-weight: var(--fw-black); }
+h2 { font-size: var(--fs-3xl); }
+h3 { font-size: var(--fs-xl); }
+
+p {
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+strong, b {
+  color: var(--text-primary);
+  font-weight: var(--fw-semi);
+}
+
+em {
+  font-style: normal;
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+small {
+  font-size: var(--fs-xs);
+  color: var(--text-tertiary);
+}
+
+/* Utility text atoms */
+.accent-text {
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-weight: var(--fw-reg);
+  letter-spacing: var(--ls-wide);
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-med);
+  text-transform: uppercase;
+  letter-spacing: var(--ls-widest);
+  color: var(--text-tertiary);
+}
+
+.eyebrow--accent {
+  color: var(--accent-gold);
+}

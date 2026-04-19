@@ -1,0 +1,28 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node (на случай если появится сборка)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Логи / временные
+*.log
+*.tmp
+
+# Env
+.env
+.env.local
+
+# Внутренние документы (не для публичного репо)
+ТЗ/
+

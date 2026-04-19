@@ -1,0 +1,100 @@
+/* ============================================================
+   Floating CTA — persistent button that follows the scroll
+   ============================================================ */
+
+.floating-cta {
+  position: fixed;
+  bottom: clamp(1rem, 3vw, 2rem);
+  right: clamp(1rem, 3vw, 2rem);
+  z-index: var(--z-floating);
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 12px 14px 12px 18px;
+
+  background: linear-gradient(135deg, rgba(24, 24, 27, 0.9) 0%, rgba(10, 10, 11, 0.92) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-accent);
+  border-radius: 999px;
+  box-shadow:
+    var(--glow-md),
+    0 20px 40px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+  opacity: 0;
+  transform: translateY(28px) scale(0.95);
+  pointer-events: none;
+  transition:
+    opacity var(--dur-mid) var(--ease-out-expo),
+    transform var(--dur-mid) var(--ease-out-expo),
+    box-shadow var(--dur-mid) var(--ease-smooth);
+}
+
+.floating-cta.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.floating-cta:hover {
+  box-shadow:
+    var(--glow-lg),
+    0 24px 50px rgba(0, 0, 0, 0.7);
+  transform: translateY(-2px);
+}
+
+.floating-cta__pulse {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--gradient-accent);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 0 20px rgba(212, 165, 116, 0.5);
+  flex-shrink: 0;
+  animation: pulseGlow 2.5s ease-out infinite;
+}
+
+.floating-cta__pulse::before {
+  content: "→";
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: var(--fw-semi);
+  color: var(--bg-void);
+}
+
+.floating-cta__label {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+  padding-right: var(--space-2);
+}
+
+.floating-cta__line-1 {
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-wide);
+  color: var(--text-primary);
+  text-transform: uppercase;
+}
+
+.floating-cta__line-2 {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: var(--ls-wider);
+  color: var(--accent-gold);
+  margin-top: 2px;
+}
+
+@media (max-width: 520px) {
+  .floating-cta__label { display: none; }
+  .floating-cta {
+    padding: 10px;
+    border-radius: 50%;
+  }
+  .floating-cta__pulse { width: 42px; height: 42px; }
+}

@@ -1,0 +1,99 @@
+/* ============================================================
+   Buttons
+   ============================================================ */
+
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--ls-wider);
+  cursor: pointer;
+  transition:
+    transform var(--dur-mid) var(--ease-out-expo),
+    box-shadow var(--dur-mid) var(--ease-out-expo);
+  isolation: isolate;
+  overflow: hidden;
+  text-align: center;
+  line-height: 1.1;
+  white-space: normal;
+}
+
+.btn__label { position: relative; z-index: 2; }
+
+.btn__arrow {
+  display: inline-block;
+  transition: transform var(--dur-mid) var(--ease-out-expo);
+  position: relative;
+  z-index: 2;
+}
+
+/* Primary — gold-bronze filled */
+.btn--primary {
+  padding: 1.1em 2em;
+  font-size: var(--fs-sm);
+  color: var(--bg-void);
+  background: var(--gradient-accent);
+  border-radius: 999px;
+  box-shadow:
+    var(--glow-md),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+
+.btn--primary::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, 0.45) 50%, transparent 70%);
+  background-size: 250% 100%;
+  background-position: -100% 0;
+  transition: background-position var(--dur-slower) var(--ease-out-expo);
+  z-index: 1;
+  opacity: 0.7;
+}
+
+.btn--primary:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    var(--glow-lg),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+}
+
+.btn--primary:hover::before { background-position: 200% 0; }
+.btn--primary:hover .btn__arrow { transform: translateX(4px); }
+
+.btn--primary:active { transform: translateY(0); }
+
+.btn--lg {
+  padding: 1.25em 2.4em;
+  font-size: var(--fs-base);
+}
+
+.btn--xl {
+  padding: 1.4em 2.8em;
+  font-size: var(--fs-lg);
+  letter-spacing: var(--ls-wide);
+}
+
+/* Ghost — bronze outline */
+.btn--ghost {
+  padding: 0.95em 1.8em;
+  font-size: var(--fs-sm);
+  color: var(--accent-gold);
+  background: transparent;
+  border: 1px solid var(--border-accent);
+  border-radius: 999px;
+}
+
+.btn--ghost:hover {
+  background: var(--gradient-accent-soft);
+  border-color: var(--border-accent-strong);
+  color: var(--text-primary);
+  box-shadow: var(--glow-sm);
+}

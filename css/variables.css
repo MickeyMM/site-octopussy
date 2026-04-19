@@ -1,0 +1,123 @@
+/* ============================================================
+   Design Tokens — Dark Premium / Surveillance AI OS
+   ============================================================ */
+
+:root {
+  /* ---------- Colors: Background layers ---------- */
+  --bg-void:          #050506;
+  --bg-primary:       #0A0A0B;
+  --bg-secondary:     #101012;
+  --bg-elevated:      #18181B;
+  --bg-glass:         rgba(24, 24, 27, 0.45);
+  --bg-glass-strong:  rgba(24, 24, 27, 0.75);
+
+  /* ---------- Colors: Accent gradient (rose gold → aged bronze) ---------- */
+  --accent-rose:      #E8B4A0;
+  --accent-gold:      #D4A574;
+  --accent-bronze:    #B8845C;
+  --accent-bronze-dp: #8C5F3A;
+  --accent-ember:     #5A3C22;
+
+  --gradient-accent:  linear-gradient(135deg, #E8B4A0 0%, #D4A574 45%, #B8845C 80%, #8C5F3A 100%);
+  --gradient-accent-soft: linear-gradient(135deg, rgba(232,180,160,0.18), rgba(212,165,116,0.08) 50%, rgba(140,95,58,0.04));
+  --gradient-glass:   linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 50%, rgba(0,0,0,0) 100%);
+
+  /* ---------- Colors: Text ---------- */
+  --text-primary:     #F5F0E8;
+  --text-secondary:   #A39D93;
+  --text-tertiary:    #6B6862;
+  --text-muted:       #403E3A;
+
+  /* ---------- Colors: Borders ---------- */
+  --border-hairline:  rgba(245, 240, 232, 0.06);
+  --border-subtle:    rgba(232, 180, 160, 0.10);
+  --border-accent:    rgba(212, 165, 116, 0.28);
+  --border-accent-strong: rgba(212, 165, 116, 0.55);
+
+  /* ---------- Colors: Status ---------- */
+  --status-live:      #8FE0A8;
+  --status-warn:      #E8B466;
+
+  /* ---------- Glow / Shadows ---------- */
+  --glow-xs:    0 0 12px rgba(212, 165, 116, 0.14);
+  --glow-sm:    0 0 24px rgba(212, 165, 116, 0.20);
+  --glow-md:    0 0 48px rgba(212, 165, 116, 0.26);
+  --glow-lg:    0 0 96px rgba(212, 165, 116, 0.30);
+  --glow-inner: inset 0 0 36px rgba(232, 180, 160, 0.04);
+
+  --shadow-soft:  0 10px 40px rgba(0, 0, 0, 0.55);
+  --shadow-deep:  0 30px 80px rgba(0, 0, 0, 0.70);
+  --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+  /* ---------- Typography ---------- */
+  --font-display:  "Unbounded", "Space Grotesk", "Inter", system-ui, sans-serif;
+  --font-ui:       "Space Grotesk", "Inter", system-ui, sans-serif;
+  --font-mono:     "JetBrains Mono", "Roboto Mono", ui-monospace, monospace;
+
+  --fw-thin:    300;
+  --fw-reg:     400;
+  --fw-med:     500;
+  --fw-semi:    600;
+  --fw-bold:    700;
+  --fw-black:   900;
+
+  /* ---------- Fluid type scale ---------- */
+  --fs-micro:   clamp(0.68rem, 0.68rem + 0.05vw, 0.74rem);
+  --fs-xs:      clamp(0.78rem, 0.78rem + 0.1vw, 0.85rem);
+  --fs-sm:      clamp(0.88rem, 0.88rem + 0.12vw, 0.95rem);
+  --fs-base:    clamp(1rem, 0.95rem + 0.2vw, 1.08rem);
+  --fs-lg:      clamp(1.15rem, 1.05rem + 0.4vw, 1.35rem);
+  --fs-xl:      clamp(1.45rem, 1.3rem + 0.8vw, 1.9rem);
+  --fs-2xl:     clamp(1.9rem, 1.6rem + 1.4vw, 2.8rem);
+  --fs-3xl:     clamp(2.4rem, 1.9rem + 2vw, 3.8rem);
+  --fs-4xl:     clamp(3rem, 2.2rem + 3.2vw, 5.2rem);
+  --fs-5xl:     clamp(3.6rem, 2.6rem + 4.5vw, 7.5rem);
+
+  /* Letter spacing */
+  --ls-tight:   -0.02em;
+  --ls-normal:  0;
+  --ls-wide:    0.04em;
+  --ls-wider:   0.08em;
+  --ls-widest:  0.22em;
+
+  /* ---------- Spacing ---------- */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.5rem;
+  --space-6:  2rem;
+  --space-7:  3rem;
+  --space-8:  4rem;
+  --space-9:  6rem;
+  --space-10: 8rem;
+  --space-11: 12rem;
+
+  /* ---------- Layout ---------- */
+  --container-max:  1280px;
+  --container-pad:  clamp(1.25rem, 3vw, 2.5rem);
+  --section-py:     clamp(5rem, 9vw, 9rem);
+  --radius-xs:      4px;
+  --radius-sm:      8px;
+  --radius-md:      14px;
+  --radius-lg:      22px;
+  --radius-xl:      32px;
+
+  /* ---------- Motion ---------- */
+  --ease-out-expo:  cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-smooth:    cubic-bezier(0.4, 0, 0.2, 1);
+
+  --dur-fast:   160ms;
+  --dur-mid:    320ms;
+  --dur-slow:   600ms;
+  --dur-slower: 1200ms;
+
+  /* ---------- Z-index ---------- */
+  --z-grain:       1;
+  --z-base:        10;
+  --z-elevated:    20;
+  --z-sticky:      80;
+  --z-floating:    90;
+  --z-nav:         100;
+}
