@@ -16,6 +16,7 @@
 @import url("./components/octopus.css");
 @import url("./components/floating-cta.css");
 @import url("./components/decorative.css");
+@import url("./components/scroll-pin.css");
 
 /* Sections */
 @import url("./sections/hero.css");

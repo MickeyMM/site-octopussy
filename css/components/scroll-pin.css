@@ -1,0 +1,39 @@
+/* ============================================================
+   Scroll-Pin — стили для секций с эффектом "блоки прилетают"
+   ============================================================ */
+
+/* Помечаем body когда GSAP активен, чтобы отключить старые reveal */
+.gsap-ready .reveal {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+/* Секции с pin — плавное GPU-ускорение */
+.scroll-pin {
+  position: relative;
+  will-change: transform, opacity, filter;
+  transform-origin: center center;
+  backface-visibility: hidden;
+}
+
+/* Контент внутри секций готов к анимации */
+.scroll-pin .section__head,
+.scroll-pin .diag-card,
+.scroll-pin .feat-row,
+.scroll-pin .intel-card,
+.scroll-pin .authority__wrap,
+.scroll-pin .final-cta__inner,
+.scroll-pin .hero__container,
+.scroll-pin .diagnosis__footer {
+  will-change: transform, opacity;
+}
+
+/* Мобилка / touch / reduced-motion — отключаем эффекты */
+@media (max-width: 899px), (hover: none) and (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .scroll-pin {
+    transform: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+  }
+}

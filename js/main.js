@@ -8,6 +8,7 @@ import { initScrollEffects }       from "./modules/scroll-effects.js";
 import { initFloatingCTA }         from "./modules/floating-cta.js";
 import { initReveal }              from "./modules/reveal.js";
 import { initCounters }            from "./modules/counters.js";
+import { initScrollPin }           from "./modules/scroll-pin.js";
 
 const boot = () => {
   initOctopusInteractions();
@@ -15,6 +16,7 @@ const boot = () => {
   initFloatingCTA();
   initReveal();
   initCounters();
+  initScrollPin();
 };
 
 if (document.readyState === "loading") {
