@@ -95,7 +95,7 @@ body::before {
 /* Section head shared layout */
 .section__head {
   max-width: 980px;
-  margin-inline: auto var(--space-7);
+  margin-inline: auto;
   padding: 0 var(--container-pad);
   margin-bottom: clamp(3rem, 5vw, 5rem);
   position: relative;

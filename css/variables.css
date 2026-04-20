@@ -68,10 +68,10 @@
   --fs-base:    clamp(1rem, 0.95rem + 0.2vw, 1.08rem);
   --fs-lg:      clamp(1.15rem, 1.05rem + 0.4vw, 1.35rem);
   --fs-xl:      clamp(1.45rem, 1.3rem + 0.8vw, 1.9rem);
-  --fs-2xl:     clamp(1.9rem, 1.6rem + 1.4vw, 2.8rem);
-  --fs-3xl:     clamp(2.4rem, 1.9rem + 2vw, 3.8rem);
-  --fs-4xl:     clamp(3rem, 2.2rem + 3.2vw, 5.2rem);
-  --fs-5xl:     clamp(3.6rem, 2.6rem + 4.5vw, 7.5rem);
+  --fs-2xl:     clamp(1.6rem, 1.4rem + 1.1vw, 2.3rem);
+  --fs-3xl:     clamp(1.85rem, 1.5rem + 1.5vw, 2.8rem);
+  --fs-4xl:     clamp(2.3rem, 1.8rem + 2.2vw, 3.9rem);
+  --fs-5xl:     clamp(2.8rem, 2rem + 3.4vw, 5.6rem);
 
   /* Letter spacing */
   --ls-tight:   -0.02em;

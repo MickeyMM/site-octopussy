@@ -65,7 +65,7 @@
     <!-- ============================================ -->
     <!-- SECTION 1: HERO -->
     <!-- ============================================ -->
-    <section class="hero" id="hero">
+    <section class="hero" id="hero" data-anim="hero">
       <div class="hero__grid" aria-hidden="true"></div>
 
       <div class="hero__frame">
@@ -211,7 +211,7 @@
     <!-- ============================================ -->
     <!-- SECTION 2: DIAGNOSIS -->
     <!-- ============================================ -->
-    <section class="diagnosis" id="diagnosis">
+    <section class="diagnosis" id="diagnosis" data-anim="diagnosis">
       <div class="section__head">
         <span class="section__index">01 / Диагноз</span>
         <h2 class="section__title">
@@ -272,7 +272,7 @@
     <!-- ============================================ -->
     <!-- SECTION 3: OCTO CAPTURE -->
     <!-- ============================================ -->
-    <section class="capture" id="capture">
+    <section class="capture" id="capture" data-anim="capture">
       <div class="section__head">
         <span class="section__index">02 / Octo Capture</span>
         <h2 class="section__title">
@@ -343,7 +343,7 @@
     <!-- ============================================ -->
     <!-- SECTION 4: OCTO INTELLIGENCE -->
     <!-- ============================================ -->
-    <section class="intelligence" id="intelligence">
+    <section class="intelligence" id="intelligence" data-anim="intelligence">
       <div class="section__head section__head--center">
         <span class="section__index">03 / Octo Intelligence</span>
         <h2 class="section__title">
@@ -422,7 +422,7 @@
     <!-- ============================================ -->
     <!-- SECTION 5: AUTHORITY -->
     <!-- ============================================ -->
-    <section class="authority" id="authority">
+    <section class="authority" id="authority" data-anim="authority">
       <div class="authority__wrap">
         <div class="authority__meta">
           <span class="section__index">04 / Кто стоит за системой</span>
@@ -463,7 +463,7 @@
     <!-- ============================================ -->
     <!-- SECTION 6: FINAL CTA -->
     <!-- ============================================ -->
-    <section class="final-cta" id="final-cta">
+    <section class="final-cta" id="final-cta" data-anim="final-cta">
       <div class="final-cta__inner">
         <div class="final-cta__frame">
           <span class="frame-corner frame-corner--tl"></span>
@@ -517,9 +517,21 @@
     </span>
   </a>
 
-  <!-- GSAP + ScrollTrigger (for pin-scroll effect) -->
+  <!-- GSAP + ScrollTrigger (анимации блоков) -->
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <!-- Lenis (плавный скролл с инерцией, работает и на мобилках) -->
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+
+  <!-- Страховка: если GSAP не загрузится за 3 сек — показать контент без анимаций -->
+  <script>
+    setTimeout(function () {
+      if (!document.body.classList.contains("gsap-ready")) {
+        document.body.classList.add("gsap-fallback");
+        console.warn("[fallback] GSAP не загрузился — показываем контент без анимаций");
+      }
+    }, 3000);
+  </script>
 
   <!-- JS modules -->
   <script type="module" src="js/main.js"></script>

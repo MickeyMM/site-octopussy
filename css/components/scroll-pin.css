@@ -1,39 +1,87 @@
 /* ============================================================
-   Scroll-Pin — стили для секций с эффектом "блоки прилетают"
+   Scroll-Pin — анимации блоков + плавный скролл (Lenis)
    ============================================================ */
 
-/* Помечаем body когда GSAP активен, чтобы отключить старые reveal */
+/* Lenis — плавный скролл */
+html.lenis, html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* ============================================================
+   СТРАХОВОЧНОЕ СКРЫТИЕ — секции и их контент невидимы
+   до инициализации GSAP. GSAP сам управляет opacity/transform.
+   ============================================================ */
+[data-anim] {
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* Внутренний контент пинных секций тоже изначально невидим,
+   чтобы не было вспышки до того, как GSAP выставит начальное состояние */
+[data-anim="diagnosis"] .section__head,
+[data-anim="diagnosis"] .diag-card,
+[data-anim="diagnosis"] .diagnosis__footer,
+[data-anim="capture"] .section__head,
+[data-anim="capture"] .feat-row,
+[data-anim="intelligence"] .section__head,
+[data-anim="intelligence"] .intel-card,
+[data-anim="authority"] .authority__meta,
+[data-anim="authority"] .authority__content,
+[data-anim="final-cta"] .final-cta__inner {
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* Если JS отключён / GSAP не загрузился — показать всё через 2 сек */
+@media (prefers-reduced-motion: reduce) {
+  [data-anim],
+  [data-anim-item] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Когда GSAP готов, убираем страховочное правило */
+.gsap-ready [data-anim],
+.gsap-ready [data-anim-item] {
+  /* GSAP сам задаёт opacity через from() */
+}
+
+/* Если GSAP не загрузится через 3 сек — принудительно покажем */
+.gsap-fallback [data-anim],
+.gsap-fallback [data-anim] * {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+/* Секции готовы к анимации */
+.scroll-pin {
+  position: relative;
+  backface-visibility: hidden;
+}
+
+/* Секции — простой overflow hidden чтобы анимации не ломали layout */
+.gsap-ready [data-anim] {
+  overflow: hidden;
+}
+
+/* Отключаем старые reveal-классы когда GSAP активен */
 .gsap-ready .reveal {
   opacity: 1 !important;
   transform: none !important;
   transition: none !important;
-}
-
-/* Секции с pin — плавное GPU-ускорение */
-.scroll-pin {
-  position: relative;
-  will-change: transform, opacity, filter;
-  transform-origin: center center;
-  backface-visibility: hidden;
-}
-
-/* Контент внутри секций готов к анимации */
-.scroll-pin .section__head,
-.scroll-pin .diag-card,
-.scroll-pin .feat-row,
-.scroll-pin .intel-card,
-.scroll-pin .authority__wrap,
-.scroll-pin .final-cta__inner,
-.scroll-pin .hero__container,
-.scroll-pin .diagnosis__footer {
-  will-change: transform, opacity;
-}
-
-/* Мобилка / touch / reduced-motion — отключаем эффекты */
-@media (max-width: 899px), (hover: none) and (pointer: coarse), (prefers-reduced-motion: reduce) {
-  .scroll-pin {
-    transform: none !important;
-    opacity: 1 !important;
-    filter: none !important;
-  }
 }
