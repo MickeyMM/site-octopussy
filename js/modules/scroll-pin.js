@@ -21,11 +21,16 @@ export function initScrollPin() {
 
   console.log("[scroll-pin] ✅ GSAP + ScrollTrigger готовы, v" + gsap.version);
 
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Lenis — плавный скролл с инерцией (если CDN загрузился)
+  if (window.Lenis && !reducedMotion) initLenis(gsap, ScrollTrigger);
+
   // Упрощённый режим на мобилках / touch / reduced-motion
   const isMobile =
     window.innerWidth < 900 ||
     window.matchMedia("(hover: none), (pointer: coarse)").matches ||
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    reducedMotion;
 
   if (isMobile) {
     console.log("[scroll-pin] mobile mode — используем простой reveal");
@@ -34,6 +39,23 @@ export function initScrollPin() {
   }
 
   initDesktop(gsap, ScrollTrigger);
+}
+
+function initLenis(gsap, ScrollTrigger) {
+  const lenis = new window.Lenis({
+    duration: 1.2,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smoothWheel: true,
+    smoothTouch: false,
+    touchMultiplier: 2,
+    wheelMultiplier: 1,
+    lerp: 0.1,
+  });
+  lenis.on("scroll", ScrollTrigger.update);
+  gsap.ticker.add((time) => lenis.raf(time * 1000));
+  gsap.ticker.lagSmoothing(0);
+  window.__lenis = lenis;
+  console.log("[scroll-pin] ✅ Lenis активен (инерция скролла)");
 }
 
 /* ------------------------------------------------------------
