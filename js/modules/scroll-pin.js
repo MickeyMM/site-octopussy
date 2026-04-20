@@ -43,13 +43,11 @@ export function initScrollPin() {
 
 function initLenis(gsap, ScrollTrigger) {
   const lenis = new window.Lenis({
-    duration: 1.2,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    lerp: 0.12,
     smoothWheel: true,
     smoothTouch: false,
+    wheelMultiplier: 1.1,
     touchMultiplier: 2,
-    wheelMultiplier: 1,
-    lerp: 0.1,
   });
   lenis.on("scroll", ScrollTrigger.update);
   gsap.ticker.add((time) => lenis.raf(time * 1000));
