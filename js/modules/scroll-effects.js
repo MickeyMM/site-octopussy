@@ -1,19 +1,13 @@
 /* ============================================================
-   Scroll effects — минимальные эффекты, не связанные с GSAP.
-   Орбы и hero__grid теперь анимируются через ScrollTrigger
-   в scroll-pin.js — здесь только fallback, если GSAP не загрузился.
+   Scroll effects — parallax on the octopus + ambient orbs
    ============================================================ */
 
 export function initScrollEffects() {
-  // Если GSAP доступен — паралакс орбов/сетки управляется в scroll-pin.js
-  if (typeof window.gsap !== "undefined" && typeof window.ScrollTrigger !== "undefined") {
-    return;
-  }
-
-  // Fallback: простой параллакс на нативном скролле
+  const octopus = document.querySelector(".octopus");
   const orbs = document.querySelectorAll(".ambient-glow__orb");
   const heroGrid = document.querySelector(".hero__grid");
-  if (!orbs.length && !heroGrid) return;
+
+  if (!octopus && !orbs.length && !heroGrid) return;
 
   let ticking = false;
   let lastY = window.scrollY;
@@ -26,13 +20,27 @@ export function initScrollEffects() {
     }
   };
 
+  // Проверяем режим pin — если он активен на десктопе,
+  // parallax на октопусе/сетке отключается, чтобы не конфликтовать с GSAP pin.
+  const pinActive =
+    typeof window.matchMedia === "function" &&
+    !window.matchMedia("(hover: none), (pointer: coarse)").matches &&
+    window.innerWidth >= 900;
+
   const update = () => {
     const y = lastY;
-    if (heroGrid) heroGrid.style.transform = `translate3d(0, ${y * 0.08}px, 0)`;
+
+    // Hero grid — лёгкий parallax оставляем только в мобильном режиме (без pin)
+    if (heroGrid && !pinActive) {
+      heroGrid.style.transform = `translate3d(0, ${y * 0.08}px, 0)`;
+    }
+
+    // Orbs — всегда работают, визуально создают глубину
     orbs.forEach((orb, i) => {
       const rate = i === 0 ? 0.12 : -0.08;
       orb.style.transform = `translate3d(0, ${y * rate}px, 0)`;
     });
+
     ticking = false;
   };
 

@@ -1,82 +1,93 @@
 /* ============================================================
-   Scroll animations — ВЕСЬ эффект привязан к скроллу (scrub):
-   - вход блоков: элементы плывут на место по мере приближения
-   - выход: растворяются в блюр по мере ухода вверх
-   - фон: орбы двигаются медленнее скролла (параллакс глубины)
+   Scroll-Pin — эффект "блоки прилетают к зрителю"
+   Каждая секция pin'ится на время анимации её контента.
    ============================================================ */
 
 export function initScrollPin() {
-  console.log("[scroll] init…");
+  console.log("[scroll-pin] init…");
 
-  const gsap = window.gsap;
-  const ScrollTrigger = window.ScrollTrigger;
-  const Lenis = window.Lenis;
-
-  if (!gsap || !ScrollTrigger) {
-    console.error("[scroll] ❌ GSAP/ScrollTrigger не загружены");
-    document.body.classList.add("gsap-fallback");
+  if (typeof window.gsap === "undefined") {
+    console.error("[scroll-pin] ❌ GSAP не загружен — проверь CDN / интернет");
+    return;
+  }
+  if (typeof window.ScrollTrigger === "undefined") {
+    console.error("[scroll-pin] ❌ ScrollTrigger не загружен");
     return;
   }
 
+  const { gsap, ScrollTrigger } = window;
   gsap.registerPlugin(ScrollTrigger);
   document.body.classList.add("gsap-ready");
-  console.log("[scroll] ✅ GSAP v" + gsap.version);
 
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  console.log("[scroll-pin] ✅ GSAP + ScrollTrigger готовы, v" + gsap.version);
 
-  // 1) Lenis — плавный скролл с инерцией
-  if (Lenis && !reducedMotion) initLenis(gsap, ScrollTrigger, Lenis);
+  // Упрощённый режим на мобилках / touch / reduced-motion
+  const isMobile =
+    window.innerWidth < 900 ||
+    window.matchMedia("(hover: none), (pointer: coarse)").matches ||
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // 2) Hero — анимация на загрузке страницы
-  animateHeroOnLoad(gsap);
+  if (isMobile) {
+    console.log("[scroll-pin] mobile mode — используем простой reveal");
+    initMobileReveal(gsap);
+    return;
+  }
 
-  // 3) Все остальные секции — scrub-анимации (вход + выход)
-  animateDiagnosis(gsap);
-  animateCapture(gsap);
-  animateIntelligence(gsap);
-  animateAuthority(gsap);
-  animateFinalCTA(gsap);
+  initDesktop(gsap, ScrollTrigger);
+}
 
-  // 4) Фоновый паралакс — орбы, сетка
-  addBackgroundParallax(gsap);
+/* ------------------------------------------------------------
+   Desktop: pin каждой секции + анимация контента
+   ------------------------------------------------------------ */
+function initDesktop(gsap, ScrollTrigger) {
+  const sections = [
+    { sel: "#hero",         anim: animateHero         },
+    { sel: "#diagnosis",    anim: animateDiagnosis    },
+    { sel: "#capture",      anim: animateCapture      },
+    { sel: "#intelligence", anim: animateIntelligence },
+    { sel: "#authority",    anim: animateAuthority    },
+    { sel: "#final-cta",    anim: animateFinalCTA     },
+  ];
 
-  // 5) Рефреш после полной загрузки
+  sections.forEach(({ sel, anim }) => {
+    const section = document.querySelector(sel);
+    if (!section) {
+      console.warn("[scroll-pin] section not found:", sel);
+      return;
+    }
+    section.classList.add("scroll-pin");
+
+    // Анимация въезда контента (fire один раз при входе в viewport)
+    anim(gsap, section);
+
+    // Анимация ухода — секция "растворяется" когда уходит вверх
+    gsap.to(section, {
+      opacity: 0.15,
+      scale: 0.92,
+      filter: "blur(8px)",
+      ease: "none",
+      scrollTrigger: {
+        trigger: section,
+        start: "bottom 80%",   // когда низ секции в 80% viewport
+        end: "bottom 20%",     // до 20% viewport
+        scrub: true,
+      },
+    });
+  });
+
+  // Refresh после загрузки шрифтов/картинок
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(() => ScrollTrigger.refresh());
   }
   window.addEventListener("load", () => ScrollTrigger.refresh());
+
+  console.log("[scroll-pin] desktop anims bound for", sections.length, "sections");
 }
 
 /* ------------------------------------------------------------
-   Lenis — плавный скролл с инерцией
+   Анимации каждой секции
    ------------------------------------------------------------ */
-function initLenis(gsap, ScrollTrigger, Lenis) {
-  const lenis = new Lenis({
-    duration: 1.2,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    smoothWheel: true,
-    smoothTouch: false,
-    touchMultiplier: 2,
-    wheelMultiplier: 1,
-    lerp: 0.1,
-  });
-
-  lenis.on("scroll", ScrollTrigger.update);
-  gsap.ticker.add((time) => lenis.raf(time * 1000));
-  gsap.ticker.lagSmoothing(0);
-
-  window.__lenis = lenis;
-  console.log("[scroll] ✅ Lenis активен (инерция скролла)");
-}
-
-/* ------------------------------------------------------------
-   Hero — анимация на загрузке
-   ------------------------------------------------------------ */
-function animateHeroOnLoad(gsap) {
-  const section = document.querySelector('[data-anim="hero"]');
-  if (!section) return;
-  gsap.set(section, { opacity: 1 });
-
+function animateHero(gsap, section) {
   const items = [
     section.querySelector(".hero__meta"),
     section.querySelector(".hero__title"),
@@ -86,232 +97,99 @@ function animateHeroOnLoad(gsap) {
     section.querySelector(".hero__readouts"),
   ].filter(Boolean);
 
-  gsap.fromTo(
-    items,
-    { opacity: 0, y: 70 },
-    { opacity: 1, y: 0, duration: 1.1, ease: "power4.out", stagger: 0.13, delay: 0.15 }
-  );
-}
-
-/* ------------------------------------------------------------
-   Хелперы — вход и выход со scrub
-   ------------------------------------------------------------ */
-// Элемент плывёт на место по мере появления в viewport
-function scrubEntry(gsap, el, fromState) {
-  if (!el) return;
-  gsap.fromTo(
-    el,
-    fromState,
-    {
-      opacity: 1,
-      x: 0,
-      y: 0,
-      scale: 1,
-      rotateX: 0,
-      rotateY: 0,
-      filter: "blur(0px)",
-      ease: "none",
-      scrollTrigger: {
-        trigger: el,
-        start: "top bottom",   // элемент только появился снизу
-        end: "top 65%",        // доплыл до 65% viewport
-        scrub: 1,
-        invalidateOnRefresh: true,
-      },
-    }
-  );
-}
-
-// Элемент улетает вверх и размывается при уходе.
-// Используем top-anchored старт, чтобы гарантировать —
-// вход ВСЕГДА завершается раньше, чем выход начинается
-// (особенно важно для коротких блоков).
-function scrubExit(gsap, el, toState) {
-  if (!el) return;
-  gsap.to(el, {
-    ...toState,
-    ease: "none",
-    scrollTrigger: {
-      trigger: el,
-      start: "top 15%",      // элемент уже в верхней четверти экрана — время читать закончилось
-      end: "bottom top",
-      scrub: 1,
-      invalidateOnRefresh: true,
-    },
+  gsap.from(items, {
+    y: 60,
+    opacity: 0,
+    duration: 1,
+    ease: "power3.out",
+    stagger: 0.14,
   });
 }
 
-/* ------------------------------------------------------------
-   Диагноз — заголовок, две карточки, итог
-   ------------------------------------------------------------ */
-function animateDiagnosis(gsap) {
-  const section = document.querySelector('[data-anim="diagnosis"]');
-  if (!section) return;
-  gsap.set(section, { opacity: 1 });
-
+function animateDiagnosis(gsap, section) {
   const head = section.querySelector(".section__head");
   const cards = section.querySelectorAll(".diag-card");
   const footer = section.querySelector(".diagnosis__footer");
+  const trigger = enterTrigger(section);
 
-  scrubEntry(gsap, head, { opacity: 0, y: 80, scale: 0.95 });
-  scrubEntry(gsap, cards[0], { opacity: 0, x: -180, y: 60, scale: 0.9, rotateY: -12 });
-  scrubEntry(gsap, cards[1], { opacity: 0, x: 180, y: 60, scale: 0.9, rotateY: 12 });
-  scrubEntry(gsap, footer, { opacity: 0, y: 50, scale: 0.95 });
-
-  scrubExit(gsap, head, { opacity: 0, y: -40, filter: "blur(6px)" });
-  scrubExit(gsap, cards[0], { opacity: 0.15, y: -80, scale: 0.95, filter: "blur(8px)" });
-  scrubExit(gsap, cards[1], { opacity: 0.15, y: -110, scale: 0.95, filter: "blur(8px)" });
-  scrubExit(gsap, footer, { opacity: 0, y: -60, filter: "blur(6px)" });
+  if (head) gsap.from(head, { y: 40, opacity: 0, duration: 0.8, ease: "power2.out", scrollTrigger: trigger });
+  if (cards[0]) gsap.from(cards[0], { x: -150, opacity: 0, duration: 1.1, ease: "power3.out", scrollTrigger: trigger });
+  if (cards[1]) gsap.from(cards[1], { x: 150, opacity: 0, duration: 1.1, ease: "power3.out", scrollTrigger: trigger });
+  if (footer) gsap.from(footer, { y: 30, opacity: 0, duration: 0.8, delay: 0.4, ease: "power2.out", scrollTrigger: trigger });
 }
 
-/* ------------------------------------------------------------
-   Capture — заголовок + 3 строки
-   ------------------------------------------------------------ */
-function animateCapture(gsap) {
-  const section = document.querySelector('[data-anim="capture"]');
-  if (!section) return;
-  gsap.set(section, { opacity: 1 });
-
+function animateCapture(gsap, section) {
   const head = section.querySelector(".section__head");
   const rows = section.querySelectorAll(".feat-row");
+  const trigger = enterTrigger(section);
 
-  scrubEntry(gsap, head, { opacity: 0, y: 80, scale: 0.95 });
-  rows.forEach((row, i) => {
-    scrubEntry(gsap, row, {
-      opacity: 0,
-      y: 120 + i * 30,           // нижние строки идут с бóльшего расстояния
-      x: i % 2 === 0 ? -60 : 60, // поочерёдно слева/справа
-      scale: 0.92,
-    });
-  });
-
-  scrubExit(gsap, head, { opacity: 0, y: -40, filter: "blur(6px)" });
-  rows.forEach((row, i) => {
-    scrubExit(gsap, row, {
-      opacity: 0.15,
-      y: -70 - i * 20,           // разная скорость ухода — паралакс
-      scale: 0.94,
-      filter: "blur(7px)",
-    });
+  if (head) gsap.from(head, { y: 40, opacity: 0, duration: 0.8, ease: "power2.out", scrollTrigger: trigger });
+  if (rows.length) gsap.from(rows, {
+    y: 80, opacity: 0, duration: 0.9, ease: "power3.out",
+    stagger: 0.2, scrollTrigger: trigger,
   });
 }
 
-/* ------------------------------------------------------------
-   Intelligence — 3 карточки "падают" сверху
-   ------------------------------------------------------------ */
-function animateIntelligence(gsap) {
-  const section = document.querySelector('[data-anim="intelligence"]');
-  if (!section) return;
-  gsap.set(section, { opacity: 1 });
-
+function animateIntelligence(gsap, section) {
   const head = section.querySelector(".section__head");
   const cards = section.querySelectorAll(".intel-card");
+  const trigger = enterTrigger(section);
 
-  scrubEntry(gsap, head, { opacity: 0, y: 80, scale: 0.95 });
-  cards.forEach((card, i) => {
-    scrubEntry(gsap, card, {
-      opacity: 0,
-      y: -150 - (i === 1 ? 50 : 0),   // центральная падает с большей высоты
-      scale: 0.85,
-      rotateX: -15,
-    });
-  });
-
-  scrubExit(gsap, head, { opacity: 0, y: -40, filter: "blur(6px)" });
-  cards.forEach((card, i) => {
-    scrubExit(gsap, card, {
-      opacity: 0.15,
-      y: -90 - (i === 1 ? 40 : 0),
-      scale: 0.94,
-      filter: "blur(8px)",
-    });
+  if (head) gsap.from(head, { y: 40, opacity: 0, duration: 0.8, ease: "power2.out", scrollTrigger: trigger });
+  if (cards.length) gsap.from(cards, {
+    y: -80, opacity: 0, scale: 0.9, duration: 1, ease: "power3.out",
+    stagger: 0.17, scrollTrigger: trigger,
   });
 }
 
-/* ------------------------------------------------------------
-   Authority — мета слева, контент справа, статы снизу
-   ------------------------------------------------------------ */
-function animateAuthority(gsap) {
-  const section = document.querySelector('[data-anim="authority"]');
-  if (!section) return;
-  gsap.set(section, { opacity: 1 });
-
-  const meta = section.querySelector(".authority__meta");
+function animateAuthority(gsap, section) {
   const content = section.querySelector(".authority__content");
+  const meta = section.querySelector(".authority__meta");
   const stats = section.querySelectorAll(".stat");
+  const trigger = enterTrigger(section);
 
-  scrubEntry(gsap, meta, { opacity: 0, x: -120, y: 40, scale: 0.95 });
-  scrubEntry(gsap, content, { opacity: 0, x: 100, y: 60, scale: 0.95 });
-  stats.forEach((stat, i) => {
-    scrubEntry(gsap, stat, {
-      opacity: 0,
-      y: 80 + i * 20,
-      scale: 0.9,
-    });
-  });
-
-  scrubExit(gsap, meta, { opacity: 0, y: -60, filter: "blur(7px)" });
-  scrubExit(gsap, content, { opacity: 0.2, y: -90, scale: 0.96, filter: "blur(8px)" });
-  stats.forEach((stat, i) => {
-    scrubExit(gsap, stat, { opacity: 0, y: -40 - i * 15, filter: "blur(5px)" });
+  if (meta) gsap.from(meta, { x: -60, opacity: 0, duration: 0.9, ease: "power2.out", scrollTrigger: trigger });
+  if (content) gsap.from(content, { x: 60, opacity: 0, duration: 1, ease: "power2.out", scrollTrigger: trigger });
+  if (stats.length) gsap.from(stats, {
+    y: 40, opacity: 0, duration: 0.7, stagger: 0.12, delay: 0.5,
+    ease: "power2.out", scrollTrigger: trigger,
   });
 }
 
-/* ------------------------------------------------------------
-   Final CTA — центральный zoom + кнопка
-   ------------------------------------------------------------ */
-function animateFinalCTA(gsap) {
-  const section = document.querySelector('[data-anim="final-cta"]');
-  if (!section) return;
-  gsap.set(section, { opacity: 1 });
-
+function animateFinalCTA(gsap, section) {
   const inner = section.querySelector(".final-cta__inner");
-  const title = section.querySelector(".final-cta__title");
-  const text = section.querySelector(".final-cta__text");
   const btn = section.querySelector(".btn");
+  const trigger = enterTrigger(section);
 
-  scrubEntry(gsap, inner, { opacity: 0, y: 100, scale: 0.85 });
-  scrubEntry(gsap, title, { opacity: 0, y: 60, scale: 0.95 });
-  scrubEntry(gsap, text, { opacity: 0, y: 40 });
-  scrubEntry(gsap, btn, { opacity: 0, y: 50, scale: 0.7 });
-
-  // Выход — финальный блок, улетает меньше (пользователь обычно не пролистывает дальше)
-  scrubExit(gsap, inner, { opacity: 0.3, y: -60, scale: 0.95, filter: "blur(6px)" });
+  if (inner) gsap.from(inner, {
+    scale: 0.8, opacity: 0, duration: 1.2, ease: "power3.out",
+    scrollTrigger: trigger,
+  });
+  if (btn) gsap.from(btn, {
+    scale: 0.6, opacity: 0, duration: 0.9, delay: 0.5,
+    ease: "back.out(1.8)", scrollTrigger: trigger,
+  });
 }
 
 /* ------------------------------------------------------------
-   Фоновый паралакс — орбы и декоративные слои
-   двигаются медленнее/быстрее скролла, создавая глубину
+   Хелперы
    ------------------------------------------------------------ */
-function addBackgroundParallax(gsap) {
-  // Золотые орбы (ambient glow)
-  const orbs = document.querySelectorAll(".ambient-glow__orb");
-  orbs.forEach((orb, i) => {
-    gsap.to(orb, {
-      y: i === 0 ? -400 : 300,
-      x: i === 0 ? 80 : -60,
-      ease: "none",
-      scrollTrigger: {
-        trigger: document.body,
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 1.5,
-      },
+function enterTrigger(section) {
+  return {
+    trigger: section,
+    start: "top 75%",
+    toggleActions: "play none none reverse",
+  };
+}
+
+function initMobileReveal(gsap) {
+  const blocks = document.querySelectorAll(
+    ".section__head, .diag-card, .feat-row, .intel-card, .authority__content, .final-cta__inner, .stat"
+  );
+  blocks.forEach((el) => {
+    gsap.from(el, {
+      y: 40, opacity: 0, duration: 0.8, ease: "power2.out",
+      scrollTrigger: { trigger: el, start: "top 88%", toggleActions: "play none none none" },
     });
   });
-
-  // Hero сетка — лёгкий дрейф при скролле
-  const heroGrid = document.querySelector(".hero__grid");
-  if (heroGrid) {
-    gsap.to(heroGrid, {
-      y: 200,
-      ease: "none",
-      scrollTrigger: {
-        trigger: ".hero",
-        start: "top top",
-        end: "bottom top",
-        scrub: 1,
-      },
-    });
-  }
 }
